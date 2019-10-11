@@ -163,5 +163,16 @@ namespace NUnitTestEvalStr
             Assert.AreEqual(-6, value);
             Assert.IsTrue(string.IsNullOrEmpty(errMsg));
         }
+
+        [Test]
+        public void Test10()
+        {
+            string content = "4 + 1 3 / 2";
+            float value;
+            string errMsg;
+            bool result = EvalStrWorker.EvalStr(content, out value, out errMsg);
+            Assert.IsTrue(!result);
+            Assert.AreEqual("Operator is missing before character: 3 [index: 6].", errMsg);
+        }
     }
 }
