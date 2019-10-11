@@ -81,6 +81,41 @@ namespace EvalStr.Workers
                         }
                     }
                     // Check number
+                    else if (c == '(')
+                    {
+                        int childEndIndex;
+                        string childErrMsg;
+                        ArithmeticExpression<ICalculator> childExpression = ParseExpression(s, out childEndIndex, out childErrMsg, index + 1, recurLevel + 1);
+                        if (!string.IsNullOrWhiteSpace(childErrMsg))
+                        {
+                            errMsg += childErrMsg;
+                            break;
+                        }
+                        else if (childExpression == null)
+                        {
+                            errMsg += $"Expression missing in parentheses: [index: {index}].";
+                            break;
+                        }
+                        else
+                        {
+                            index = childEndIndex; // ')'
+                            newOperand = new ArithmeticOperand<ICalculator>
+                            {
+                                Expression = childExpression
+                            };
+                            prevOperand = true;
+                            prevOperator = false;
+                        }
+                    }
+                    else if (c == ')')
+                    {
+                        recurLevel--;
+                        if (recurLevel < 0)
+                        {
+                            errMsg += $"Redundant right parenthesis: [index: {index}].";
+                        }
+                        break;
+                    }
                     else if (c >= '0' && c <= '9')
                     {
                         IntCalculator intCalculator = ArithmeticExpressionFactory.CreateCalculator(s, ref index, ref prevOperator, ref prevOperand, ref errMsg) as IntCalculator;
@@ -116,7 +151,11 @@ namespace EvalStr.Workers
                     index++;
                 }
 
-                if (newOperand != null && curExpression != null)
+                if (index == s.Length && recurLevel > 0)
+                {
+                    errMsg += $"Missing {recurLevel} right parenthesis.";
+                }
+                else if (newOperand != null && curExpression != null)
                 {
                     curExpression.AddOperand(newOperand);
                     newOperand = null;

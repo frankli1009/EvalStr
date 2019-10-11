@@ -100,5 +100,79 @@ namespace NUnitTestEvalStr
             Assert.AreEqual("14", value);
             Assert.IsTrue(result.IsSuccessStatusCode);
         }
+
+        [Test]
+        public async Task Test6()
+        {
+            // Arrange
+            string content = "3 + ((4 + 5)  *2 + 8/(5 - 1)) * 2";
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+            sw.Write(content);
+            sw.Flush();
+            ms.Position = 0;
+
+            var httpContext = new DefaultHttpContext(); // or mock a `HttpContext`
+            //httpContext.Request.Headers["token"] = "fake_token_here"; //Set header
+            httpContext.Request.Body = ms;
+            var controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            };
+            _evalStrController.ControllerContext = controllerContext;
+
+            // Act
+            var result = await _evalStrController.Get();
+
+            // Assert
+            string value = await result.Content.ReadAsStringAsync();
+            Assert.AreEqual("43", value);
+            Assert.IsTrue(result.IsSuccessStatusCode);
+        }
+
+        [Test]
+        public void Test7()
+        {
+            string content = "4 + (5  *(2 + 3";
+            float value;
+            string errMsg;
+            bool result = EvalStrWorker.EvalStr(content, out value, out errMsg);
+            Assert.IsTrue(!result);
+            Assert.AreEqual("Missing 2 right parenthesis.", errMsg);
+        }
+
+        [Test]
+        public void Test8()
+        {
+            string content = "4 + 5  * -2";
+            float value;
+            string errMsg;
+            bool result = EvalStrWorker.EvalStr(content, out value, out errMsg);
+            Assert.IsTrue(!result);
+            Assert.AreEqual("Operand is missing before character: - [index=9].", errMsg);
+        }
+
+        [Test]
+        public void Test9()
+        {
+            string content = "4 + 5  * (-2)";
+            float value;
+            string errMsg;
+            bool result = EvalStrWorker.EvalStr(content, out value, out errMsg);
+            Assert.IsTrue(result);
+            Assert.AreEqual(-6, value);
+            Assert.IsTrue(string.IsNullOrEmpty(errMsg));
+        }
+
+        [Test]
+        public void Test10()
+        {
+            string content = "4 + 1 3 / 2";
+            float value;
+            string errMsg;
+            bool result = EvalStrWorker.EvalStr(content, out value, out errMsg);
+            Assert.IsTrue(!result);
+            Assert.AreEqual("Operator is missing before character: 3 [index: 6].", errMsg);
+        }
     }
 }
