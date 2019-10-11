@@ -1,5 +1,5 @@
 # EvalStr
-An web api project to evaluate the value of an expression which contains only integer numbers.
+An web api project to evaluate the value of an expression which contains only non-negative integer numbers.
 
 Route:
 /evalstr
@@ -16,3 +16,9 @@ HttpGet/HttpPost
 Response:
 Status OK (200) + String Content (out value) when succeeded.
 Status Bad Request (401) + String Content (error message) when failed.
+
+11/10/2019: 
+
+Add support for parentheses and negative number, example of expression: (4+5)*2+(-2) (out: 16)
+
+
