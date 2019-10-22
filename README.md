@@ -15,10 +15,12 @@ HttpGet/HttpPost
 
 Response:
 Status OK (200) + String Content (out value) when succeeded.
-Status Bad Request (401) + String Content (error message) when failed.
+Status Bad Request (400) + String Content (error message) when failed.
 
 11/10/2019: 
 
 Add support for parentheses and negative number, example of expression: (4+5)*2+(-2) (out: 16)
 
+22/10/2019:
 
+Add json format request and response on route evalstr/json which only supports HttpPost
