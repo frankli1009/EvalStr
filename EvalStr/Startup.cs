@@ -24,7 +24,22 @@ namespace EvalStr
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:1337")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                    });
+
+            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +51,8 @@ namespace EvalStr
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
