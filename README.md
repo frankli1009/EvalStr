@@ -23,4 +23,31 @@ Add support for parentheses and negative number, example of expression: (4+5)*2+
 
 22/10/2019:
 
-Add json format request and response on route evalstr/json which only supports HttpPost
+Add json format request and response.
+
+Route: 
+/evalstr/json 
+
+Request Type:
+HttpPost
+
+Input (ajax data): 
+  Type: CalculatorRequest with only string property Expression, e.g.: {"Expression":"5*(+6*2 1)"}
+  
+Output:
+  Type: CalculatorResponse with 3 properties.
+  Property StatusCode - type: HttpStatusCode, please refer to the response of route /evalstr for details.
+  Property Result - value of the expression when succeeded, type: string.
+  Property ErrorMessage - error message when failed, type: string.
+  Successful response example for input {"Expression":"5*(+6*2- 1)"}:
+  {
+    "statusCode": 200,
+    "result": "55",
+    "errorMessage": null
+  }
+  Failure response example for input {"Expression":"5*(+6*2 1)"}:
+  {
+    "statusCode": 400,
+    "result": null,
+    "errorMessage": "Operator is missing before character: 1 [index: 8]."
+  }
