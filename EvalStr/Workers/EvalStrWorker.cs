@@ -96,6 +96,11 @@ namespace EvalStr.Workers
                             errMsg += $"Expression missing in parentheses: [index: {index}].";
                             break;
                         }
+                        else if (prevOperand)
+                        {
+                            errMsg += $"Operator is missing before character: ( [index: {index}].";
+                            break;
+                        }
                         else
                         {
                             index = childEndIndex; // ')'
