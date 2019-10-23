@@ -1,0 +1,7 @@
+{
+  "Hosts": [
+    "http://localhost:1337",
+    "http://evalstr-epu.franklidev.com",
+    "http://evalstr-vue.franklidev.com"
+  ]
+}
