@@ -51,3 +51,16 @@ Output:
     "result": null,
     "errorMessage": "Operator is missing before character: 1 [index: 8]."
   }
+
+30/10/2019:
+
+Add API List
+
+Route:
+/list
+
+Input:
+None
+
+Output:
+List Of API information with Path (request path), Title and Description.
