@@ -266,5 +266,17 @@ namespace NUnitTestEvalStr
             Assert.IsTrue(!result);
             Assert.AreEqual("Operator is missing before character: ( [index: 3].", errMsg);
         }
+
+        [Test]
+        public async Task Test14()
+        {
+            // Act
+            var result = await _evalStrController.GetList();
+
+            // Assert
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual("/evalstr/json", result[0].Path);
+            Assert.AreEqual("/evalstr/json/float", result[1].Path);
+        }
     }
 }

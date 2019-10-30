@@ -24,6 +24,28 @@ namespace EvalStr.Controllers
             _logger = logger;
         }
 
+        [Route("list")]
+        [EnableCors("CorsPolicy")]
+        public async Task<List<ApiList>> GetList()
+        {
+            return new List<ApiList>
+            {
+                new ApiList
+                {
+                    Path = "/evalstr/json",
+                    Title = "Evaluating Expression With Integer Operands",
+                    Description = "Evaluating Expression With Integer Operands"
+                },
+                new ApiList()
+                {
+                    Path = "/evalstr/json/float",
+                    Title = "Evaluating Expression With Float Operands",
+                    Description = "Evaluating Expression With Integer Operands"
+                }
+
+            };
+        }
+
         [Route("evalstr")]
         [HttpGet, HttpPost]
         [EnableCors("CorsPolicy")]
@@ -72,6 +94,47 @@ namespace EvalStr.Controllers
         [EnableCors("CorsPolicy")]
         async public Task<CalculatorResponse> Post(CalculatorRequest exp)
         {
+            string content = exp.Expression;
+            if (!string.IsNullOrWhiteSpace(content))
+            {
+                float value;
+                string errMsg;
+                if (EvalStrWorker.EvalStr(content, out value, out errMsg))
+                {
+                    _logger.LogInformation($"value: {value}");
+                    return new CalculatorResponse
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Result = value.ToString()
+                    };
+                }
+                else
+                {
+                    _logger.LogInformation($"errMsg: {errMsg}");
+                    return new CalculatorResponse
+                    {
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        ErrorMessage = errMsg
+                    };
+                }
+            }
+            return new CalculatorResponse
+            {
+                StatusCode = System.Net.HttpStatusCode.BadRequest,
+                ErrorMessage = "Expression can't be null."
+            };
+        }
+
+        [Route("evalstr/json/float")]
+        [HttpPost]
+        [EnableCors("CorsPolicy")]
+        async public Task<CalculatorResponse> EvalFloat(CalculatorRequest exp)
+        {
+            return new CalculatorResponse
+            {
+                StatusCode = System.Net.HttpStatusCode.FailedDependency,
+                ErrorMessage = "Sorry, not implemented."
+            };
             string content = exp.Expression;
             if (!string.IsNullOrWhiteSpace(content))
             {
