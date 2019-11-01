@@ -40,7 +40,7 @@ namespace EvalStr.Controllers
                 {
                     Path = "/evalstr/json/float",
                     Title = "Evaluating Expression With Float Operands",
-                    Description = "Evaluating Expression With Integer Operands"
+                    Description = "Evaluating Expression With Float Operands"
                 }
 
             };
