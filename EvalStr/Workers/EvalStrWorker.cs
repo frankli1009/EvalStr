@@ -13,11 +13,18 @@ namespace EvalStr.Workers
         {
             int endIndex;
             value = 0;
-            ArithmeticExpression<ICalculator> expression = ParseExpression(s, out endIndex, out errMsg);
-            if (expression != null && string.IsNullOrEmpty(errMsg))
+            try
             {
-                value = expression.GetValue().Value;
-                return true;
+                ArithmeticExpression<ICalculator> expression = ParseExpression(s, out endIndex, out errMsg);
+                if (expression != null && string.IsNullOrEmpty(errMsg))
+                {
+                    value = expression.GetValue().Value;
+                    return true;
+                }
+            }
+            catch(Exception e)
+            {
+                errMsg = e.Message;
             }
 
             return false;
@@ -154,6 +161,11 @@ namespace EvalStr.Workers
                     }
 
                     index++;
+                }
+
+                if (prevOperator)
+                {
+                    errMsg += $"Operand is missing at the end of the expressioin.";
                 }
 
                 if (index == s.Length && recurLevel > 0)
